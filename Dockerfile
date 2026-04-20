@@ -1,13 +1,15 @@
-FROM node:20-alpine3.20
+FROM node:alpine3.20
 
 WORKDIR /tmp
 
-ENV UUID=c51c3e58-9330-4e2d-bb1f-d8434d706f8d \
-    ARGO_DOMAIN=xxxx.com \
-    ARGO_AUTH=eyxxxxx
-    
+COPY . .
 
-RUN apk update && apk add --no-cache bash openssl curl &&\
-    npm i node-sbx
+EXPOSE 3000/tcp
 
-CMD ["npx", "node-sbx"]
+RUN apk update && apk upgrade &&\
+    apk add --no-cache openssl curl gcompat iproute2 coreutils &&\
+    apk add --no-cache bash &&\
+    chmod +x index.js &&\
+    npm install
+
+CMD ["node", "index.js"]
